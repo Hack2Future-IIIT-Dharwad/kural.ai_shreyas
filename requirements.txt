@@ -1,0 +1,8 @@
+transformers
+torch
+soundfile
+subprocess
+time
+groq
+parler_tts
+git+https://github.com/huggingface/parler-tts.git
