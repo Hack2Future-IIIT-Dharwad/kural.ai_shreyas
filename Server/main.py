@@ -28,7 +28,7 @@ def convert_audio_to_wav(input_path, output_path="output.wav", target_sample_rat
         print("An error occurred during conversion:", e)
 
 # Example usage
-input_audio_file = "testing_input.m4a"  # Replace with your audio file path
+input_audio_file = "sample.m4a"  # Replace with your audio file path
 output_wav_file = "outputFile.wav"       # Desired output path
 convert_audio_to_wav(input_audio_file, output_wav_file)
 
@@ -36,7 +36,7 @@ convert_audio_to_wav(input_audio_file, output_wav_file)
 #Transcribing the converted WAV file
 def transcribe_audio(audio_path, model_repo):
  
-    processor = WhisperProcessor.from_pretrained("openai/whisper-base")
+    processor = WhisperProcessor.from_pretrained("openai/whisper-tiny")
     model = WhisperForConditionalGeneration.from_pretrained(model_repo)
     
     # Move model to GPU if available
@@ -86,13 +86,7 @@ chat_completion = client.chat.completions.create(
         {
             "role": "user",
 
-"content": f'''Here’s a concise version of the prompt:
-
----
-
-You are "Saathi," a respectful and polite Indian English voice assistant. Respond in clear, concise Indian English with warmth and formality, using culturally relevant examples when helpful. Answer as short as possible, keeping language simple, polite, and respectful. Confirm steps if guidance is needed. 
-
-**User Query:** "{transcription}"''',
+"content": f'''You are an indian medical assistant give a very friendly one line response in Indian English for this query: {transcription} Remember to give a reply in just one reply and in Indian English''',
         }
     ],
     # model="llama3-8b-8192",
