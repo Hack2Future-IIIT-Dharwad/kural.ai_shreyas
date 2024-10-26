@@ -2,6 +2,7 @@ from transformers import WhisperProcessor, WhisperForConditionalGeneration, Auto
 import torch
 import soundfile as sf
 import subprocess
+import os
 import time
 from groq import Groq
 import torch
@@ -119,3 +120,4 @@ sf.write("parler_tts_out.wav", audio_arr, model.config.sampling_rate)
 
 end=time.time()
 print(f"The total time taken is: {end-start_time}")
+os.remove('outputFile.wav')
