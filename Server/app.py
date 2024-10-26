@@ -37,14 +37,14 @@ async def transcribe_audio(file: UploadFile = File(...)):
             transcription = str(result["text"]) + " You are a model that is very friendly, you only give one sentence replies and repsonses in a friendly way."
             print(str(transcription))
 
-            resp = ollama.chat(model='llama3.2:latest', messages=[
+            resp = ollama.chat(model='llama3.2:1b', messages=[
             {
                 'role': 'user',
-                'content': "Hello my name is Justin",
+                'content': transcription,
             },
             ])
 
-            return JSONResponse(content={"transcription": resp})
+            return JSONResponse(content={"transcription": resp}, status_code=200) 
         except Exception as e:
             print(f"Error transcribing file: {e}")
             return JSONResponse(content={"error": "Failed to transcribe file"}, status_code=500)
