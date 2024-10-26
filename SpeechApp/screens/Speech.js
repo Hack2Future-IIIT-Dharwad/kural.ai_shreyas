@@ -204,7 +204,7 @@ const Speech = ({route}) => {
       
       <View style={styles.profileSection}>
 
-      <Text  style={{ color: 'green', fontSize: 12, fontWeight: 'bold', }}>{asrText}</Text>
+      <Text  style={{ color: 'black', fontSize: 12, fontWeight: 'bold', }}>{asrText}</Text>
 
 
       {/* <View style={styles.imageContainer}>
@@ -230,8 +230,8 @@ const Speech = ({route}) => {
       </ScrollView> */}
 
       <TouchableOpacity style={styles.recordingBubble} onPress={synthesizeSpeech}>
-    {micPressed ? <Icon name="record-circle" size={20} color="#FF6600" /> : <Icon name="record" size={20} color="#FF6600" />}
-          <Text style={styles.speechText}>{micPressed ? "Not yet started" : "Started"}</Text>
+    {micPressed ? <Icon name="record-circle" size={20} color="#50c878" /> : <Icon name="record" size={20} color="#50c878" />}
+          <Text style={styles.speechText}>{micPressed ? "Click to Start" : "Click to Stop"}</Text>
         </TouchableOpacity>
 
 
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
   profileImage: {
     width: 60,
     height: 100,
-    backgroundColor: '#FFC0CB',
+    backgroundColor: '#C3F7D4FF',
     borderTopRightRadius: 100,
     borderBottomRightRadius: 100,
   },
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
   recordingBubble: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FBE4CB',
+    backgroundColor: '#C3F7D4FF',
     borderRadius: 20,
     padding: 10,
     marginLeft: 10,
@@ -325,12 +325,12 @@ const styles = StyleSheet.create({
   micButton: {
     width: 150,
     height: 150,
-    borderRadius: 40,
+    borderRadius: 100,
     marginTop: 150,
     top: -100,
-    backgroundColor: '#FF6600',
+    backgroundColor: '#50c878',
     justifyContent: 'center',
-    shadowColor: '#FF6600',
+    shadowColor: '#50c878',
     shadowRadius: 10,
     elevation: 30,
     alignItems: 'center',

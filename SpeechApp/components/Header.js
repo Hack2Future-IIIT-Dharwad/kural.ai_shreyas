@@ -27,13 +27,13 @@ const styles = StyleSheet.create({
 
   },
   backButton: {
-    color: 'orange',
+    color: 'green',
     fontSize: 18,
   },
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: 'orange',
+    color: 'green',
     textAlign: 'center',
     flex: 1,
     marginLeft: 12,
