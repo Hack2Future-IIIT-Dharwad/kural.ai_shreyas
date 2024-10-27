@@ -6,29 +6,36 @@ const { width, height } = Dimensions.get('window');
 export default function Splash({ navigation }) {
   return (
     <View style={styles.container}>
+      <Image source={require('../assets/123.png')} style={styles.backgroundImage} />
       <View style={styles.topContainer}>
-        <Image source={require('../assets/Splashscreen.png')} style={styles.image} />
+        <Image source={require('../assets/img.png')} style={styles.image} />
+        <Text style={styles.title1}>Kural.ai</Text>
       </View>
       <View style={styles.bottomContainer}>
-        <Text style={styles.title}>Learn Tamil language for free!</Text>
-        <Text style={styles.subtitle}>Learn how to pronounce words with ease!</Text>
-
+        <Text style={styles.title}>Get Professional Help</Text>
+        <Text style={styles.subtitle}>in Professional time</Text>
         <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('Speech')}>
-          <Text style={styles.loginText}>Lessgoo</Text>
+          <Text style={styles.loginText}>Let's Go</Text>
         </TouchableOpacity>
         {/* <TouchableOpacity style={styles.signUpButton} onPress={() => navigation.navigate('SignUp')}>
           <Text style={styles.signUpText}>Sign Up</Text>
         </TouchableOpacity> */}
-        
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  backgroundImage: {
+    position: 'absolute',
+    width: '100%',
+    height: '80%',
+    resizeMode: 'cover',
+    opacity: 0.2,
+  },
   container: {
     flex: 1,
-    backgroundColor: '#f36f21',
+    backgroundColor: '#50c878',
   },
   topContainer: {
     flex: 2,
@@ -56,13 +63,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#000',
   },
+  title1: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
   subtitle: {
     fontSize: 16,
     color: '#000',
     marginBottom: 20,
   },
   signUpButton: {
-    backgroundColor: '#f36f21',
+    backgroundColor: '#50c878',
     paddingVertical: 15,
     alignItems: 'center',
     paddingHorizontal: 50,
@@ -76,8 +88,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   loginButton: {
-    borderColor: '#f36f21',
-    borderWidth: 1,
+    backgroundColor: '#50c878',
     paddingVertical: 1,
     paddingHorizontal: 55,
     borderRadius: 10,
@@ -86,7 +97,8 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   loginText: {
-    color: '#f36f21',
+    backgroundColor: '#50c878',
+    color: '#fff',
     fontSize: 18,
   },
 });
