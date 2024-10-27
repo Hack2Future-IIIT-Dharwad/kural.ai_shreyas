@@ -22,7 +22,7 @@
         const clientId = 'client_' + Math.random().toString(36).substr(2, 9);
 
         function connect() {
-            ws = new WebSocket(`ws://localhost:8000/ws/${clientId}`);
+            ws = new WebSocket(`ws://127.0.0.1:8000/ws/${clientId}`);
             
             ws.onmessage = function(event) {
                 try {
