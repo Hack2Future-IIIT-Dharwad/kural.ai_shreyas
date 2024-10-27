@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Image } from 'react-native';
 import axios from 'axios';
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
@@ -10,6 +10,7 @@ const { width, height } = Dimensions.get('window');
 const Speech = ({ route }) => {
   const [sentence, setSentence] = useState('');
   const [resp, setResp] = useState('');
+  const [start, setStart] = useState(false);
   const [micPressed, setMicPressed] = useState(true);
   const [imageIndex, setImageIndex] = useState(0);
   const [visemeArr, setVisemeMap] = useState([]);
@@ -21,39 +22,40 @@ const Speech = ({ route }) => {
     setSentence(route.params);
   }, [route.params]);
 
-  const synthesizeSpeech = async () => {
-    try {
-      const response = await axios.post(`http://viseme-server.vercel.app/viseme?inputText=${sentence}`);
-      const result = response.data;
-      setVisemeMap(result);
+  // const synthesizeSpeech = async () => {
+  //   try {
+  //     const response = await axios.post(`http://viseme-server.vercel.app/viseme?inputText=${sentence}`);
+  //     const result = response.data;
+  //     setVisemeMap(result);
 
-      const audioResponse = await axios.post(`http://viseme-server.vercel.app/tts?inputText=${sentence}`);
-      const base64String = audioResponse.data.toString('base64');
-      const fileUri = `${FileSystem.cacheDirectory}temp_audio.m4a`;
-      await FileSystem.writeAsStringAsync(fileUri, base64String, { encoding: FileSystem.EncodingType.Base64 });
+  //     const audioResponse = await axios.post(`http://viseme-server.vercel.app/tts?inputText=${sentence}`);
+  //     const base64String = audioResponse.data.toString('base64');
+  //     const fileUri = `${FileSystem.cacheDirectory}temp_audio.m4a`;
+  //     await FileSystem.writeAsStringAsync(fileUri, base64String, { encoding: FileSystem.EncodingType.Base64 });
       
-      const soundObject = new Audio.Sound();
-      try {
-        await soundObject.loadAsync({ uri: fileUri });
-        await soundObject.setRateAsync(0.5, true);
-        visemeArr.forEach((e) => {
-          const duration = e.privAudioOffset / 3000;
-          setTimeout(() => {
-            setImageIndex(e.privVisemeId);
-          }, duration / 2);
-        });
-        await soundObject.playAsync();
-        soundObject.setOnPlaybackStatusUpdate((status) => {
-          if (!status.didJustFinish) return;
-          soundObject.unloadAsync();
-        });
-      } catch (error) {
-        console.log('Error playing sound:', error);
-      }
-    } catch (error) {
-      console.error('Error fetching or playing audio:', error);
-    }
-  };
+  //     const soundObject = new Audio.Sound();
+  //     try {
+  //       await soundObject.loadAsync({ uri: fileUri });
+  //       await soundObject.setRateAsync(0.5, true);
+  //       visemeArr.forEach((e) => {
+  //         const duration = e.privAudioOffset / 3000;
+  //         setTimeout(() => {
+  //           setImageIndex(e.privVisemeId);
+  //         }, duration / 2);
+  //       });
+  //       await soundObject.playAsync();
+  //       soundObject.setOnPlaybackStatusUpdate((status) => {
+  //         if (!status.didJustFinish) return;
+  //         soundObject.unloadAsync();
+  //         setStart(!start);
+  //       });
+  //     } catch (error) {
+  //       console.log('Error playing sound:', error);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching or playing audio:', error);
+  //   }
+  // };
 
   const startRecording = async () => {
     try {
@@ -68,6 +70,7 @@ const Speech = ({ route }) => {
       const recording = new Audio.Recording();
       await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
       await recording.startAsync();
+
       recordingRef.current = recording;
       setRecording(true);
       console.log('Recording started');
@@ -103,6 +106,7 @@ const Speech = ({ route }) => {
             },
           });
           setResp(response);
+          setStart(!start);
           const base64String = response.data.encode.toString('base64');
           const fileUri = `${FileSystem.cacheDirectory}temp_response_audio.m4a`;
           await FileSystem.writeAsStringAsync(fileUri, base64String, { encoding: FileSystem.EncodingType.Base64 });
@@ -114,6 +118,7 @@ const Speech = ({ route }) => {
             soundObject.setOnPlaybackStatusUpdate((status) => {
               if (!status.didJustFinish) return;
               soundObject.unloadAsync();
+              setStart(false);
             });
           } catch (error) {
             console.log('Error playing sound:', error);
@@ -133,6 +138,20 @@ const Speech = ({ route }) => {
         <Text style={styles.speechText}>{sentence}</Text>
       </View>
 
+      {!start && (<View style={styles.gifContainer}>
+      <Image
+        source={require('../assets/akka.png')}
+        style={styles.gif}
+      />
+    </View>)}
+    
+    {start && (<View style={styles.gifContainer}>
+      <Image
+        source={require('../assets/wom.gif')}
+        style={styles.gif}
+      />
+    </View>)}
+
       {resp && (
         <View style={styles.chatContainer}>
           <View style={styles.chatBubble1}>
@@ -144,12 +163,13 @@ const Speech = ({ route }) => {
         </View>
       )}
 
-      <TouchableOpacity style={styles.recordingBubble} onPress={synthesizeSpeech}>
+      <TouchableOpacity style={styles.recordingBubble} >
         {micPressed ? <Icon name="record-circle" size={20} color="#50c878" /> : <Icon name="record" size={20} color="#50c878" />}
         <Text style={styles.speechText}>{micPressed ? "Click to Start" : "Click to Stop"}</Text>
       </TouchableOpacity>
 
-      {micPressed ? (
+
+{micPressed ? (
         <TouchableOpacity style={styles.micButton} onPress={startRecording}>
           <Icon name={"microphone-outline"} size={40} color="white" />
         </TouchableOpacity>
@@ -158,11 +178,24 @@ const Speech = ({ route }) => {
           <Icon name={"microphone"} size={40} color="white" />
         </TouchableOpacity>
       )}
+
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  gif:{
+    width: 170,
+    height: 170,
+    borderRadius: 100,
+  },
+  gifContainer: {
+    borderRadius: 100,
+    overlayColor: 'white',
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -170,7 +203,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   profileSection: {
-    marginTop: 25,
+    marginTop: 5,
     marginLeft: 20,
     marginRight: 20,
     flexDirection: 'row',
@@ -178,6 +211,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   recordingBubble: {
+    marginTop: 10,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#C3F7D4FF',
@@ -209,7 +243,7 @@ const styles = StyleSheet.create({
 
   },
   chatContainer: {
-    marginBottom: 80,
+    marginTop: 10,
     padding: 15,
     borderRadius: 10,
     marginVertical: 5,
@@ -226,10 +260,10 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   micButton: {
-    width: 150,
-    height: 150,
+    width: 140,
+    height: 140,
     borderRadius: 100,
-    marginTop: 150,
+    marginTop: 130,
     top: -100,
     backgroundColor: '#50c878',
     justifyContent: 'center',
